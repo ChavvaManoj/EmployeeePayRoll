@@ -119,4 +119,56 @@ public class EmployeeService {
                         new RuntimeException("Employee not found"));
     }
 
+    public Employee updateEmployee(
+            Long id,
+            EmployeeRequest employeeRequest) {
+
+        Employee employee = employeeRepository
+                .findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Employee not found"));
+
+        Department department = departmentRepository
+                .findById(employeeRequest.getDepartmentId())
+                .orElseThrow(() ->
+                        new RuntimeException("Department not found"));
+
+        Designation designation = designationRepository
+                .findById(employeeRequest.getDesignationId())
+                .orElseThrow(() ->
+                        new RuntimeException("Designation not found"));
+
+        PayLevel payLevel = payLevelRepository
+                .findById(employeeRequest.getPayLevelId())
+                .orElseThrow(() ->
+                        new RuntimeException("Pay level not found"));
+
+        employee.setEmployeeCode(employeeRequest.getEmployeeCode());
+        employee.setEmployeeName(employeeRequest.getEmployeeName());
+        employee.setEmail(employeeRequest.getEmail());
+        employee.setMobileNumber(employeeRequest.getMobileNumber());
+
+        employee.setDepartment(department);
+        employee.setDesignation(designation);
+        employee.setPayLevel(payLevel);
+
+        employee.getPostingDetails().clear();
+        employee.getPaymentDetails().clear();
+
+        mapPostingDetails(employee, employeeRequest);
+        mapPaymentDetails(employee, employeeRequest);
+
+        return employeeRepository.save(employee);
+    }
+
+    public void deleteEmployee(Long id) {
+
+        Employee employee = employeeRepository
+                .findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Employee not found"));
+
+        employeeRepository.delete(employee);
+    }
+
 }
