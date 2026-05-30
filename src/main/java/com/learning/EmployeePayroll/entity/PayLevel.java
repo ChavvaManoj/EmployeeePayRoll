@@ -1,20 +1,23 @@
-package entity;
+package com.learning.EmployeePayroll.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Entity
-@Table(name = "designation")
+@Table(name = "pay_level")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Designation {
-
+public class PayLevel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String designationName;
+    private String levelCode;
+
+    private BigDecimal basicPay;
 }

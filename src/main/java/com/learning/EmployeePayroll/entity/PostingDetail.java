@@ -1,4 +1,5 @@
-package entity;
+package com.learning.EmployeePayroll.entity;
+
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -6,30 +7,28 @@ import lombok.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "payment_detail")
+@Table(name = "posting_detail")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PaymentDetail {
+public class PostingDetail {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String bankName;
+    private String officeName;
 
-    private String accountNumber;
+    private String location;
 
-    private String ifscCode;
+    private LocalDate fromDate;
 
-    private Boolean active;
-
-    private LocalDate effectiveFrom;
-
-    private LocalDate effectiveTo;
+    private LocalDate toDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id")
     private Employee employee;
+
 }

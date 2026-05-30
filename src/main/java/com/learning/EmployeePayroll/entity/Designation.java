@@ -1,21 +1,20 @@
-package entity;
-
+package com.learning.EmployeePayroll.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "department")
+@Table(name = "designation")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Department {
+public class Designation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
-    private String DepartmentName;
+    private String designationName;
 }

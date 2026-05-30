@@ -1,4 +1,4 @@
-package entity;
+package com.learning.EmployeePayroll.entity;
 
 
 import jakarta.persistence.*;
