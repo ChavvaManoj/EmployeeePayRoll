@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: EmployeePayroll
+  datasource:
+    url: jdbc:postgresql://localhost:5432/salary_management
+    username: manojchavva
+    password: postgres
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
