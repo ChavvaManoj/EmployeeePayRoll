@@ -1,6 +1,6 @@
 package com.learning.EmployeePayroll.entity;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,8 +27,10 @@ public class PostingDetail {
 
     private LocalDate toDate;
 
+    private Boolean active;
+
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id")
     private Employee employee;
-
 }
