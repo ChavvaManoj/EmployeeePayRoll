@@ -6,7 +6,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -35,22 +39,38 @@ public class PayrollCalculationService {
 
         salaryRunRepository.save(salaryRun);
 
-        for (Employee employee : employees) {
+        List<List<Employee>> batches =
+                createBatches(employees, 5);
 
-            try {
+        ExecutorService executorService =
+                Executors.newFixedThreadPool(3);
 
-                processEmployeeSalary(
-                        employee,
+        for (List<Employee> batch : batches) {
+
+            executorService.submit(() -> {
+
+                processBatch(
+                        batch,
                         salaryRun);
 
-                salaryRun.setProcessedEmployees(
-                        salaryRun.getProcessedEmployees() + 1);
+            });
+        }
 
-            } catch (Exception ex) {
+        executorService.shutdown();
 
-                salaryRun.setFailedEmployees(
-                        salaryRun.getFailedEmployees() + 1);
-            }
+        try {
+
+            executorService.awaitTermination(
+                    1,
+                    TimeUnit.HOURS);
+
+        } catch (InterruptedException ex) {
+
+            Thread.currentThread().interrupt();
+
+            throw new RuntimeException(
+                    "Payroll processing interrupted",
+                    ex);
         }
 
         salaryRun.setStatus("COMPLETED");
@@ -61,6 +81,15 @@ public class PayrollCalculationService {
     private void processEmployeeSalary(
             Employee employee,
             SalaryRun salaryRun) {
+
+        try {
+
+            Thread.sleep(1000);
+
+        } catch (InterruptedException e) {
+
+            Thread.currentThread().interrupt();
+        }
 
         double basicPay =
                 employee.getPayLevel()
@@ -126,5 +155,62 @@ public class PayrollCalculationService {
 
         salaryDetailRepository.save(
                 salaryDetail);
+    }
+
+    private List<List<Employee>> createBatches(
+            List<Employee> employees,
+            int batchSize) {
+
+        List<List<Employee>> batches =
+                new ArrayList<>();
+
+        for (int i = 0;
+             i < employees.size();
+             i += batchSize) {
+
+            batches.add(
+                    employees.subList(
+                            i,
+                            Math.min(
+                                    i + batchSize,
+                                    employees.size())));
+        }
+
+        return batches;
+    }
+
+    private void processBatch(
+            List<Employee> batch,
+            SalaryRun salaryRun) {
+
+        for (Employee employee : batch) {
+
+            try {
+
+                System.out.println(
+                        Thread.currentThread().getName()
+                                + " processing "
+                                + employee.getEmployeeCode());
+
+                processEmployeeSalary(
+                        employee,
+                        salaryRun);
+
+                synchronized (salaryRun) {
+
+                    salaryRun.setProcessedEmployees(
+                            salaryRun.getProcessedEmployees() + 1);
+                }
+
+            } catch (Exception ex) {
+
+                synchronized (salaryRun) {
+
+                    salaryRun.setFailedEmployees(
+                            salaryRun.getFailedEmployees() + 1);
+                }
+            }
+            System.out.println(salaryRun.getProcessedEmployees() + " Processed Employees count , Failed Employees " +salaryRun.getFailedEmployees() );
+        }
     }
 }
