@@ -6,6 +6,9 @@ import com.learning.EmployeePayroll.service.SalaryRunService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/payroll")
 @RequiredArgsConstructor
@@ -22,9 +25,20 @@ public class PayrollController {
         SalaryRun salaryRun =
                 salaryRunService.createSalaryRun(month, year);
 
-        payrollCalculationService.processSalaryRun(
-                salaryRun.getId());
+//        payrollCalculationService.processSalaryRun(salaryRun.getId());
 
         return "Payroll Processed Successfully";
     }
+
+    @GetMapping("{id}")
+    public Optional<SalaryRun> getSalaryRunStatus(@PathVariable long id){
+        return salaryRunService.getSalaryRunStatus(id);
+    }
+
+    @GetMapping()
+    public List<SalaryRun> getallSalaryRunStatus(){
+        return salaryRunService.getAllSalaryRunStatus();
+    }
+
+
 }

@@ -1,6 +1,7 @@
 spring:
   application:
     name: EmployeePayroll
+
   datasource:
     url: jdbc:postgresql://localhost:5432/salary_management
     username: manojchavva
@@ -10,3 +11,6 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+  kafka:
+    bootstrap-servers: localhost:9092

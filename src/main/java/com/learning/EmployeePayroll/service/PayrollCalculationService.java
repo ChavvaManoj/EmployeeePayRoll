@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -24,11 +26,16 @@ public class PayrollCalculationService {
 
     public void processSalaryRun(Long salaryRunId) {
 
+
         SalaryRun salaryRun = salaryRunRepository
                 .findById(salaryRunId)
                 .orElseThrow(() ->
                         new RuntimeException("Salary Run not found"));
+        if ("IN_PROGRESS".equals(
+                salaryRun.getStatus())) {
 
+            return;
+        }
         salaryRun.setStatus("IN_PROGRESS");
 
         List<Employee> employees =
@@ -72,6 +79,11 @@ public class PayrollCalculationService {
                     "Payroll processing interrupted",
                     ex);
         }
+        salaryRun.setCompletedAt(LocalDateTime.now());
+
+        Duration duration = Duration.between(salaryRun.getStartedAt(), salaryRun.getCompletedAt());
+
+        salaryRun.setDurationMs(duration.toMillis());
 
         salaryRun.setStatus("COMPLETED");
 
@@ -210,7 +222,6 @@ public class PayrollCalculationService {
                             salaryRun.getFailedEmployees() + 1);
                 }
             }
-            System.out.println(salaryRun.getProcessedEmployees() + " Processed Employees count , Failed Employees " +salaryRun.getFailedEmployees() );
         }
     }
 }

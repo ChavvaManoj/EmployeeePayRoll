@@ -6,6 +6,10 @@ import com.learning.EmployeePayroll.repository.SalaryRunRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class SalaryRunService {
@@ -26,8 +30,16 @@ public class SalaryRunService {
         salaryRun.setTotalEmployees(0);
         salaryRun.setProcessedEmployees(0);
         salaryRun.setFailedEmployees(0);
-
+        salaryRun.setStartedAt(LocalDateTime.now());
         return salaryRunRepository.save(salaryRun);
     }
 
+    public Optional<SalaryRun> getSalaryRunStatus(long id) {
+        return salaryRunRepository.findById(id);
+        
+    }
+
+    public List<SalaryRun> getAllSalaryRunStatus(){
+        return salaryRunRepository.findAll();
+    }
 }

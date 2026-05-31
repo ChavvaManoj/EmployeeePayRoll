@@ -3,6 +3,8 @@ package com.learning.EmployeePayroll.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "salary_run")
 @Getter
@@ -27,4 +29,8 @@ public class SalaryRun {
     private Integer processedEmployees;
 
     private Integer failedEmployees;
+
+    private LocalDateTime startedAt;
+    private LocalDateTime completedAt;
+    private Long durationMs;
 }
