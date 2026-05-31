@@ -18,7 +18,7 @@ public class PayrollScheduler {
     private final SalaryRunRepository salaryRunRepository;
     private final PayrollCalculationService payrollCalculationService;
 
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 10000000)
     public void processPendingSalaryProcess(){
         System.out.println("Checking for pending payrolls...");
         List<SalaryRun> pendingRuns = salaryRunRepository.findByStatus("PENDING");

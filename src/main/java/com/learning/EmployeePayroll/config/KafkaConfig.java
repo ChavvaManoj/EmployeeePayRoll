@@ -12,7 +12,7 @@ public class KafkaConfig {
     public NewTopic salaryTopic() {
 
         return TopicBuilder
-                .name("salary-processing")
+                .name(KafkaTopics.SALARY_PROCESSING)
                 .partitions(3)
                 .replicas(1)
                 .build();

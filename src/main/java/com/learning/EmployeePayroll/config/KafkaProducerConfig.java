@@ -1,5 +1,6 @@
 package com.learning.EmployeePayroll.config;
 
+import com.learning.EmployeePayroll.dto.SalaryBatchMessage;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
@@ -7,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.support.serializer.JsonSerializer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +17,7 @@ import java.util.Map;
 public class KafkaProducerConfig {
 
     @Bean
-    public ProducerFactory<String, String> producerFactory() {
+    public ProducerFactory<String, SalaryBatchMessage> producerFactory() {
 
         Map<String, Object> configProps =
                 new HashMap<>();
@@ -30,14 +32,14 @@ public class KafkaProducerConfig {
 
         configProps.put(
                 ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-                StringSerializer.class);
+                JsonSerializer.class);
 
         return new DefaultKafkaProducerFactory<>(
                 configProps);
     }
 
     @Bean
-    public KafkaTemplate<String, String> kafkaTemplate() {
+    public KafkaTemplate<String, SalaryBatchMessage> kafkaTemplate() {
 
         return new KafkaTemplate<>(
                 producerFactory());
